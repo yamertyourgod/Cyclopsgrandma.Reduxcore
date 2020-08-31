@@ -1,0 +1,20 @@
+{
+  "name": "com.cyclopsgrandma.reduxcore",
+  "displayName": "ReduxCoreForUnity",
+  "version": "1.0.0",
+  "unity": "2019.3",
+  "authoe": "Alexander Dashko",
+  "keywords": [
+    "unity",
+    "redux",
+    "editor",
+    "tools"
+  ],
+  "description": "Use Redux Core to create scalable reactive based systems",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.cds.internal.unity3d.com/unity/com.unity.timeline.git",
+    "revision": "369ead3d734d36d836197081cc603211173c06b9"
+  }
+}
