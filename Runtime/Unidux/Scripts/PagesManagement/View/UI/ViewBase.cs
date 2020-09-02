@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Unidux;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace ViewManager
 {
     public abstract class ViewBase<TState, TControls, TConfiguration> : UniduxView<TState, TControls, TConfiguration>, IView where TState : StateBase where TControls : IViewControls
     {
-        public abstract ViewName ViewName { get; }
+        public abstract Enum ViewName { get; }
         public abstract ViewType ViewType { get; }
 
         protected IViewManager viewManager;

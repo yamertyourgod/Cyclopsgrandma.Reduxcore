@@ -4,6 +4,7 @@
     {
         None,
         Window,
-        Popup
+        Popup,
+        Panel
     }
 }

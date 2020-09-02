@@ -1,8 +1,10 @@
-﻿namespace ViewManager
+﻿using System;
+
+namespace ViewManager
 {
     public interface IView
     {
-        ViewName ViewName { get; }
+        Enum ViewName { get; }
         ViewType ViewType { get; }
 
         void RegisterSelfOnAwake();
