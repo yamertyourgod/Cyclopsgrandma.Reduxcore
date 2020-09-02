@@ -11,7 +11,7 @@ namespace SampleModule.View
 {
     public class SampleView : ViewBase<SampleState, SampleControls, SampleConfiguration>
     {
-        public override ViewName ViewName => ViewName.Default;
+        public override Enum ViewName => DefaultViewName.Default;
 
         public override ViewType ViewType => ViewType.Window;
 
