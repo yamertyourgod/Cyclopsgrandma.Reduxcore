@@ -1,6 +1,6 @@
 ﻿namespace ViewManager
 {
-    public enum ViewName
+    public enum DefaultViewName
     {
         None,
         Default

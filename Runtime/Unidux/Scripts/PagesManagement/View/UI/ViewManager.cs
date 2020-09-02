@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Linq;
 using Unidux;
+using System;
 
 namespace ViewManager
 {
@@ -9,7 +10,7 @@ namespace ViewManager
     {
         public List<IView> Views = new List<IView>();
 
-        private ViewName _lastView;
+        private Enum _lastView;
 
         public void Initialize()
         {
@@ -22,9 +23,9 @@ namespace ViewManager
             view.SetActive(false);
         }
 
-        public static ViewName CurrentView;
+        public static Enum CurrentView;
 
-        public void SwitchTo(ViewName name, object options = null)
+        public void SwitchTo(Enum name, object options = null)
         {
             CurrentView = name;
             //Debug.Log($"Switch to {CurrentView}");
@@ -39,17 +40,17 @@ namespace ViewManager
 
         }
 
-        public void ShowPopup(ViewName name, object options = null)
+        public void ShowPopup(Enum name, object options = null)
         {
             GetView(name)?.OnShow(options);
         }
 
-        public IView GetView(ViewName name)
+        public IView GetView(Enum name)
         {
             return Views.FirstOrDefault(v => v.ViewName.Equals(name));
         }
 
-        public ViewName GetCurrentViewName()
+        public Enum GetCurrentViewName()
         {
             return CurrentView;
         }
