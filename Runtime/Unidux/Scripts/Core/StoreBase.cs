@@ -39,9 +39,17 @@ namespace Unidux
         public async static void Subscribe(Component component, Action<TState> action)
         {
             await UntilInstanceNotNull();
-            //Debug.Log($"{_instance} SUBSCRIBED");
+
             if (_instance._subject == null) _instance._subject = new Subject<TState>();
             _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component);
+        }
+
+        public async static void Subscribe(Action<TState> action)
+        {
+            await UntilInstanceNotNull();
+
+            if (_instance._subject == null) _instance._subject = new Subject<TState>();
+            _instance._subject.AsObservable().Subscribe(action);
         }
 
         /// <summary>
