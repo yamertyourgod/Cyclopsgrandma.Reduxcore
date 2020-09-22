@@ -20,7 +20,10 @@ namespace ViewManager
         public void RegisterView(IView view)
         {
             Views.Add(view);
-            view.SetActive(false);
+            if (view.ViewType == ViewType.Window)
+            {
+                view.SetActive(false);
+            }
         }
 
         public static Enum CurrentView;
@@ -31,7 +34,7 @@ namespace ViewManager
             //Debug.Log($"Switch to {CurrentView}");
             if (_lastView != name)
             {
-                Views.ForEach(v => v.SetActive(v.ViewName.Equals(name)));
+                Views.Where(v => v.ViewType == ViewType.Window).ToList().ForEach(v => v.SetActive(v.ViewName.Equals(name)));
                 if (Views.Exists(v => v.ViewName.Equals(name)))
                 {
                     _lastView = name;
