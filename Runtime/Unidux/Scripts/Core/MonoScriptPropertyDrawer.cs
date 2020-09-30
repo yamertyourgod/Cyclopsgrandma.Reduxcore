@@ -40,14 +40,18 @@ namespace Unidux
                     return;
                 }
                 MonoScript script = null;
-                string typeName = Type.GetType(property.stringValue).FullName;
-                if (!string.IsNullOrEmpty(typeName))
-                {
-                    m_ScriptCache.TryGetValue(typeName, out script);
-                    if (script == null)
-                        GUI.color = Color.red;
-                }
 
+                if (!string.IsNullOrEmpty(property.stringValue))
+                {
+
+                    string typeName = Type.GetType(property.stringValue).FullName;
+                    if (!string.IsNullOrEmpty(typeName))
+                    {
+                        m_ScriptCache.TryGetValue(typeName, out script);
+                        if (script == null)
+                            GUI.color = Color.red;
+                    }
+                }
                 script = (MonoScript)EditorGUI.ObjectField(position, script, typeof(MonoScript), false);
                 if (GUI.changed)
                 {
