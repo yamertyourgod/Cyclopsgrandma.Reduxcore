@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using Unidux;
-using UnityEditor;
 using UnityEngine;
 
-namespace Assets.Code.ThirdParty.Unidux.Scripts.Core
+namespace Unidux
 {
     public class StoresHub: MonoBehaviour
     {
         [SerializeField]
-        private List<MonoScript> IncludedStores = new List<MonoScript>();
+        [MonoScript]
+        private List<string> IncludedStores = new List<string>();
         private void Awake()
         {
-            IncludedStores.ForEach(store => ValidateAndAdd(store.GetClass()));
+            IncludedStores.ForEach(store => ValidateAndAdd(store));
         }
 
-        private void ValidateAndAdd(Type type)
+        private void ValidateAndAdd(string typeName)
         {
+            var type = Type.GetType(typeName);
             if (type != null)
             {
                 var instance = Activator.CreateInstance(type) as IStoreObject;
