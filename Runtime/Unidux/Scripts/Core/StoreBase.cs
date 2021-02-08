@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Unidux
 {
-    public abstract class StoreBase<TState> : IStore<TState>, IStoreObject, IInitialize, ITicker where TState : StateBase
+    public abstract class StoreBase<TState> : IStore<TState>, IStoreObject, IInitialize, ITicker, IDisposable where TState : StateBase
     {
         private static StoreBase<TState> _instance;
         private TState _state;
@@ -27,7 +27,7 @@ namespace Unidux
             _synchronizationContext = SynchronizationContext.Current;
             _state = Activator.CreateInstance<TState>();
             _changed = false;
-            UniduxTickProvider.Subscribe(this); 
+            UniduxTickProvider.Subscribe(this);
         }
 
         public static void Dispatch(UniduxAction<TState> action)
@@ -186,6 +186,11 @@ namespace Unidux
 
             //Debug.Log("Tick");
             this.ForceUpdate();
+        }
+
+        public void Dispose()
+        {
+            Debug.LogWarning("Disposing...");
         }
     }
 

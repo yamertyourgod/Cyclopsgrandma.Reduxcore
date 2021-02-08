@@ -11,8 +11,8 @@ namespace Unidux
 
         public abstract void OnStateChanged(TState state);
 
-
-        protected bool renderIfDisabled = false;
+        [SerializeField]
+        protected bool reactIfDisabled = false;
 
         protected virtual void Awake()
         {
@@ -36,7 +36,7 @@ namespace Unidux
 
         private void OnRenderRequest(TState state)
         { 
-            if (renderIfDisabled || gameObject.activeInHierarchy)
+            if (reactIfDisabled || gameObject.activeInHierarchy)
             {
                 OnStateChanged(state);
             }

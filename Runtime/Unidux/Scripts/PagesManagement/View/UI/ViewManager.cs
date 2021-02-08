@@ -45,7 +45,26 @@ namespace ViewManager
 
         public void ShowPopup(Enum name, object options = null)
         {
-            GetView(name)?.OnShow(options);
+            var view = GetView(name);
+            view.SetActive(true, options);
+        }
+
+        public void HidePopup(Enum name, object options = null)
+        {
+            var view = GetView(name);
+            view.SetActive(false, options);
+        }
+
+        public void ShowPanel(Enum name, object options = null)
+        {
+            var view = GetView(name);
+            view.SetActive(true, options);
+        }
+
+        public void HidePanel(Enum name, object options = null)
+        {
+            var view = GetView(name);
+            view.SetActive(false, options);
         }
 
         public IView GetView(Enum name)

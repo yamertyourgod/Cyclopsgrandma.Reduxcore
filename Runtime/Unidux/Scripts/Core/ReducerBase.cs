@@ -22,6 +22,8 @@ namespace Unidux
 
         public virtual TState Reduce(TState state, TAction action)
         {
+            UniduxAction<TState>.CurrentState = state;
+
             if(action.IsUndoLastAction)
             {
                 _undoApplier.Undo(state);

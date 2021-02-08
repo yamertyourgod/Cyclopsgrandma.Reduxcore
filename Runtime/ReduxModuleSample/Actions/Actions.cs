@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using Unidux;
 using UnityEngine;
@@ -10,5 +11,7 @@ namespace SampleModule
         public static SampleAction Hello => SampleHelloAction.Create();
         public static SampleAction UndoLast = new SampleAction() { IsUndoLastAction = true };
         public static SampleAction RedoLast = new SampleAction() { IsRedoLastAction = true };
+
+        public static SampleAction SetTrigger(SampleState.Trigger @enum) => SetTrigger<SampleAction>(@enum);
     }
 }

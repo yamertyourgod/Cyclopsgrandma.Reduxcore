@@ -8,8 +8,8 @@ namespace ViewManager
         ViewType ViewType { get; }
 
         void RegisterSelfOnAwake();
-        void SetActive(bool active);
+        void SetActive(bool active, object options = null);
         void OnShow(object options = null);
-        void OnHide();
+        void OnHide(object options = null);
     }
 }

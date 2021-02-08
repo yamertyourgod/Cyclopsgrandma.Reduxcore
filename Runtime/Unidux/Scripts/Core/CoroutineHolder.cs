@@ -2,7 +2,12 @@
 
 namespace Unidux
 {
-    internal class CoroutineHolder: MonoBehaviour
+    internal class CoroutineHolder: SingletonMonoBehaviour<CoroutineHolder>
     {
+        protected override void Awake()
+        {
+            base.Awake();
+            DontDestroyOnLoad(gameObject);
+        }
     }
 }

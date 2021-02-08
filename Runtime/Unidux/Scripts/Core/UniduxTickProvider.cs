@@ -7,6 +7,13 @@ namespace Unidux
     public class UniduxTickProvider: SingletonMonoBehaviour<UniduxTickProvider>
     {
         private List<ITicker> _tikers = new List<ITicker>();
+
+        private new void Awake()
+        {
+            base.Awake();
+            DontDestroyOnLoad(gameObject);
+        }
+
         public static void Subscribe(ITicker ticker)
         {
             if (Instance != null)

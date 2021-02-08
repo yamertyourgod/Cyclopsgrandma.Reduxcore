@@ -41,7 +41,7 @@ namespace Unidux
                 return true;
             }
 
-            Destroy(this);
+            Destroy(gameObject);
             return false;
         }
     }

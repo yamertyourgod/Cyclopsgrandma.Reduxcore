@@ -28,24 +28,23 @@ namespace ViewManager
 
         public virtual void OnShow(object options = null)
         {
-            Debug.Log("OnShow");
             gameObject.SetActive(true);
         }
 
-        public virtual void OnHide()
+        public virtual void OnHide(object options = null)
         {
             gameObject.SetActive(false);
         }
 
-        public void SetActive(bool active)
+        public void SetActive(bool active, object options = null)
         {
             if (active)
             {
-                OnShow();
+                OnShow(options);
             }
             else
             {
-                OnHide();
+                OnHide(options);
             }
         } 
     }
