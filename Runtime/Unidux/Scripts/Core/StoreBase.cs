@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Unidux
 {
-    public abstract class StoreBase<TState> : IStore<TState>, IStoreObject, IInitialize, ITicker, IDisposable where TState : StateBase
+    public abstract class StoreBase<TState> : IStore<TState>, IStoreObject, IInitialize, ITicker where TState : StateBase
     {
         private static StoreBase<TState> _instance;
         private TState _state;
@@ -21,13 +21,14 @@ namespace Unidux
         protected abstract IReducer[] reducers { get; set; }
         protected virtual RepositoryBase repository { get; set; }
 
+        public virtual bool DisposeOnLoadHub { get; set; }
+
         public void Initialize()
         {
             _instance = this;
             _synchronizationContext = SynchronizationContext.Current;
             _state = Activator.CreateInstance<TState>();
             _changed = false;
-            UniduxTickProvider.Subscribe(this);
         }
 
         public static void Dispatch(UniduxAction<TState> action)
@@ -188,9 +189,23 @@ namespace Unidux
             this.ForceUpdate();
         }
 
+        public void InitOnLoadHub()
+        {
+            UniduxTickProvider.Subscribe(this);
+        }
+
         public void Dispose()
         {
             Debug.LogWarning("Disposing...");
+            UniduxTickProvider.Unsubscribe(this);
+            _instance = null;
+            _state = null;
+            _subject = null;
+            _dispatcher = null;
+            _synchronizationContext = null;
+            repository.Dispose();
+            reducers.ToList().ForEach(r => r.Dispose());
+            reducers = null;
         }
     }
 

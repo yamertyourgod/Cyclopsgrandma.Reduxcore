@@ -1,29 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using UnityEngine;
 
 namespace Unidux
 {
-    public class UniduxTickProvider: SingletonMonoBehaviour<UniduxTickProvider>
+    public class UniduxTickProvider: MonoBehaviour
     {
         private List<ITicker> _tikers = new List<ITicker>();
 
-        private new void Awake()
+        private static UniduxTickProvider _instance;
+
+        private void Awake()
         {
-            base.Awake();
-            DontDestroyOnLoad(gameObject);
+            _instance = this;
         }
 
         public static void Subscribe(ITicker ticker)
         {
-            if (Instance != null)
+            if (_instance != null)
             {
                 _instance._tikers.Add(ticker);
             }
-            //else
-            //{
-            //    InternalTicker.Subscribe(tickAction);
-            //}
+        }
+
+        public static void Unsubscribe(ITicker ticker)
+        {
+            if (_instance != null)
+            {
+                _instance._tikers.Remove(ticker);
+            }
         }
 
         private void Update()
