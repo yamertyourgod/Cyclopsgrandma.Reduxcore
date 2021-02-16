@@ -10,6 +10,8 @@ namespace ViewManager
         public abstract Enum ViewName { get; }
         public abstract ViewType ViewType { get; }
 
+        public bool Active { get; set; }
+
         protected IViewManager viewManager;
 
         protected override void Awake()
@@ -46,6 +48,16 @@ namespace ViewManager
             {
                 OnHide(options);
             }
-        } 
+        }
+
+        public void OnShow(ShowOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnHide(HideOptions options = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
