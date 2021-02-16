@@ -13,6 +13,7 @@ namespace ViewManager
         public bool Active { get; set; }
 
         protected IViewManager viewManager;
+        private Coroutine _lateShowCoroutine;
 
         protected virtual int FramesSkipToLateShow { get; set; } = 1;
 
@@ -42,12 +43,13 @@ namespace ViewManager
             {
                 gameObject.SetActive(true);
                 OnShow(options);
-                StartCoroutine(CallOnShowLate());
+                _lateShowCoroutine = StartCoroutine(CallOnShowLate());
             }
             else
             {
                 gameObject.SetActive(false);
                 OnHide(options);
+                StopCoroutine(_lateShowCoroutine);
             }
         }
 
