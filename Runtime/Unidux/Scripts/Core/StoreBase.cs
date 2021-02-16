@@ -22,6 +22,7 @@ namespace Unidux
         protected virtual RepositoryBase repository { get; set; }
 
         public virtual bool DisposeOnLoadHub { get; set; }
+        public static bool Initialized => _instance != null;
 
         public void Initialize()
         {
@@ -33,6 +34,9 @@ namespace Unidux
 
         public static void Dispatch(UniduxAction<TState> action)
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
             BeginDispatch(action);
         }
 
@@ -59,11 +63,18 @@ namespace Unidux
         /// <returns></returns>
         public static TState GetState()
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
             return _instance._state;
         }
 
         public static T GetRepository<T>() where T : RepositoryBase
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
+
             if (_instance.repository != null)
             {
                 return _instance.repository is T ? _instance.repository as T : throw new Exception("Wrong repository cast type");
@@ -76,6 +87,9 @@ namespace Unidux
 
         public static async Task<T> GetReposytoryAsync<T>() where T : RepositoryBase
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
             await UntilInstanceNotNull();
             return _instance.repository as T;
         }
