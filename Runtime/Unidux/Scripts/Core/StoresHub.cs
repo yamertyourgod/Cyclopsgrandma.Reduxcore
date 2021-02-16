@@ -18,6 +18,7 @@ namespace Unidux
 
         private void Awake()
         {
+            DisposeStoresNeedDisposed();
             IncludedStores.ForEach(store => ValidateAndAdd(store));
         }
 
@@ -27,9 +28,7 @@ namespace Unidux
         }
 
         private void ValidateAndAdd(string typeName)
-        {
-            DisposeStoresNeedDisposed();            
-
+        {        
             var type = Type.GetType(typeName);
             if (type != null)
             {
