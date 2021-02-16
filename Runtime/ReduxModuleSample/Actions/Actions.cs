@@ -12,7 +12,7 @@ namespace SampleModule
         public static SampleAction UndoLast = new SampleAction() { IsUndoLastAction = true };
         public static SampleAction RedoLast = new SampleAction() { IsRedoLastAction = true };
 
-        public static SampleAction SetTrigger(SampleState.TriggerBool @enum) => SetTrigger<SampleAction>(@enum);
-        public static SampleAction SetTriggerState(SampleState.TriggerState @enum, Enum state) => SetTrigger<SampleAction>(@enum, state);
+        public static SampleAction SetTriggerBool(SampleState.TriggerBool enumTrigger) => SetTrigger<SampleAction>(enumTrigger);
+        public static SampleAction SetTriggerEnum(SampleState.TriggerEnum enumTrigger, Enum enumState) => SetTrigger<SampleAction>(enumTrigger, enumState);
     }
 }

@@ -15,7 +15,7 @@ namespace SampleModule
             None
         }
 
-        public enum TriggerState
+        public enum TriggerEnum
         {
             None
         }
