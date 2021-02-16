@@ -49,7 +49,7 @@ namespace ViewManager
             {
                 gameObject.SetActive(false);
                 OnHide(options);
-                StopCoroutine(_lateShowCoroutine);
+                if(_lateShowCoroutine != null) StopCoroutine(_lateShowCoroutine);
             }
         }
 
