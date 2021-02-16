@@ -10,9 +10,14 @@ namespace SampleModule
         public override string Id { get; set; } = "SampleModule";
         public string HelloString { get; internal set; }
 
-        public enum Trigger
+        public enum TriggerBool
         {
-            TestTrigger
+            None
+        }
+
+        public enum TriggerState
+        {
+            None
         }
     }
 }
