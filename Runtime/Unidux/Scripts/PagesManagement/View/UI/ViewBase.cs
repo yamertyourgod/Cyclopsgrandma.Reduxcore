@@ -14,6 +14,8 @@ namespace ViewManager
 
         protected IViewManager viewManager;
 
+        protected virtual int FramesSkipToLateShow { get; set; } = 1;
+
         protected override void Awake()
         {
             base.Awake();
@@ -28,36 +30,36 @@ namespace ViewManager
             viewManager.RegisterView(this);
         }
 
-        public virtual void OnShow(object options = null)
-        {
-            gameObject.SetActive(true);
-        }
+        public virtual void OnShow(SetActiveOptions options = null)  { }
 
-        public virtual void OnHide(object options = null)
-        {
-            gameObject.SetActive(false);
-        }
+        public virtual void OnLateShow() { }
 
-        public void SetActive(bool active, object options = null)
+        public virtual void OnHide(SetActiveOptions options = null) { }
+
+        public void SetActive(bool active, SetActiveOptions options = null)
         {
             if (active)
             {
+                gameObject.SetActive(true);
                 OnShow(options);
+                StartCoroutine(CallOnShowLate());
             }
             else
             {
+                gameObject.SetActive(false);
                 OnHide(options);
             }
         }
 
-        public void OnShow(ShowOptions options = null)
+        private IEnumerator CallOnShowLate()
         {
-            throw new NotImplementedException();
-        }
+            //this skips frames
+            for(var i = 0; i < FramesSkipToLateShow; i++)
+            {
+                yield return null;
+            }
 
-        public void OnHide(HideOptions options = null)
-        {
-            throw new NotImplementedException();
+            OnLateShow();
         }
     }
 }

@@ -37,7 +37,7 @@ namespace ViewManager
         public List<Enum> GetPopups => Views?.Where(v => v.ViewType == ViewType.Popup).Select(v => v.ViewName).ToList();
 
 
-        public void SwitchTo(Enum name, ShowOptions options = null)
+        public void SwitchTo(Enum name, SetActiveOptions options = null)
         {
             CurrentView = name;
             //Debug.Log($"Switch to {CurrentView}");
@@ -52,25 +52,25 @@ namespace ViewManager
 
         }
 
-        public void ShowPopup(Enum name, ShowOptions options = null)
+        public void ShowPopup(Enum name, SetActiveOptions options = null)
         {
             var view = GetView(name);
             view.SetActive(true, options);
         }
 
-        public void HidePopup(Enum name, HideOptions options = null)
+        public void HidePopup(Enum name, SetActiveOptions options = null)
         {
             var view = GetView(name);
             view.SetActive(false, options);
         }
 
-        public void ShowPanel(Enum name, ShowOptions options = null)
+        public void ShowPanel(Enum name, SetActiveOptions options = null)
         {
             var view = GetView(name);
             view.SetActive(true, options);
         }
 
-        public void HidePanel(Enum name, HideOptions options = null)
+        public void HidePanel(Enum name, SetActiveOptions options = null)
         {
             var view = GetView(name);
             view.SetActive(false, options);

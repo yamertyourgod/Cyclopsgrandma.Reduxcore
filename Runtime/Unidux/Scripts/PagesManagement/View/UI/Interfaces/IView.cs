@@ -10,8 +10,9 @@ namespace ViewManager
         bool Active { get; }
 
         void RegisterSelfOnAwake();
-        void SetActive(bool active, object options = null);
-        void OnShow(ShowOptions options = null);
-        void OnHide(HideOptions options = null);
+        void SetActive(bool active, SetActiveOptions options = null);
+        void OnShow(SetActiveOptions options = null);
+        void OnLateShow();
+        void OnHide(SetActiveOptions options = null);
     }
 }
