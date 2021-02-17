@@ -1,1 +1,1 @@
-changed version to 1.0.4
+changed version to 1.0.5
