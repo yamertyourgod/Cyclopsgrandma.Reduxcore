@@ -20,6 +20,8 @@ namespace Unidux
 
         protected abstract IReducer[] reducers { get; set; }
         protected virtual RepositoryBase repository { get; set; }
+        protected virtual EntitiesBase entities { get; set; }
+        protected virtual ServicesBase services { get; set; }
 
         public virtual bool DisposeOnLoadHub { get; set; }
         public static bool Initialized => _instance != null;
@@ -84,6 +86,39 @@ namespace Unidux
                 throw new Exception("Repo hasn't been initialized");
             }
         }
+
+        public static T GetServices<T>() where T: ServicesBase
+        {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
+
+            if (_instance.services != null)
+            {
+                return _instance.services is T ? _instance.services as T : throw new Exception("Wrong services cast type");
+            }
+            else
+            {
+                throw new Exception("Services hasn't been initialized");
+            }
+        }
+
+        public static T GetEntities<T>() where T : EntitiesBase
+        {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
+
+            if (_instance.services != null)
+            {
+                return _instance.services is T ? _instance.services as T : throw new Exception("Wrong entities cast type");
+            }
+            else
+            {
+                throw new Exception("Entities hasn't been initialized");
+            }
+        }
+
 
         public static async Task<T> GetReposytoryAsync<T>() where T : RepositoryBase
         {

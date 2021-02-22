@@ -7,7 +7,7 @@ using Unidux;
 
 namespace SampleModule
 {
-    public class SampleStore : Unidux.Util.StoreWithRepo<SampleState, SampleRepository>
+    public class SampleStore : Unidux.Util.StoreExtended<SampleState, SampleRepository, SampleServices, SampleEntities>
     {
         protected override IReducer[] reducers { get; set; } = { new SampleReducer() };
 
