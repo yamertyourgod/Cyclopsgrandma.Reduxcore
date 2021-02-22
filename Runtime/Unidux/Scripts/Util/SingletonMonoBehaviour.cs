@@ -13,11 +13,6 @@ namespace Unidux
                 if (_instance == null)
                 {
                     _instance = (TClass) FindObjectOfType(typeof(TClass));
-
-                    if (_instance == null)
-                    {
-                        Debug.LogWarning(typeof(TClass) + "is nothing");
-                    }
                 }
 
                 return _instance;
