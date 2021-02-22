@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Unidux
 {
-    public interface IReducer
+    public interface IReducer: IDisposable
     {
         bool IsMatchedAction(object action);
         object ReduceAny(object state, object action);

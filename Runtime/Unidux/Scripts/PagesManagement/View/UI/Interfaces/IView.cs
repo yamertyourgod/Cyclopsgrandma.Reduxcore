@@ -7,9 +7,12 @@ namespace ViewManager
         Enum ViewName { get; }
         ViewType ViewType { get; }
 
+        bool Active { get; }
+
         void RegisterSelfOnAwake();
-        void SetActive(bool active);
-        void OnShow(object options = null);
-        void OnHide();
+        void SetActive(bool active, SetActiveOptions options = null);
+        void OnShow(SetActiveOptions options = null);
+        void OnLateShow();
+        void OnHide(SetActiveOptions options = null);
     }
 }

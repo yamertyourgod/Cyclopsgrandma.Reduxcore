@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Unidux
 {
-    public class UniduxAction<TState>
+    public class UniduxAction<TState> where TState: StateBase
     {
         public IList<object> Payload = new List<object>();
         public Action<TState, StorageObject> Invoke;
@@ -17,6 +17,8 @@ namespace Unidux
         public Action<TState, StorageObject> DoNext;
         public bool IsUndoLastAction;
         public bool IsRedoLastAction;
+
+        public static TState CurrentState;
 
         protected static TAction CreateAction<TAction>(System.Action<TState, StorageObject> onInvoke, System.Action<TState, StorageObject> doNext = null, Action<TState, StorageObject> undo = null, Action<TState, StorageObject> redo = null) where TAction : UniduxAction<TState>
         {
@@ -36,5 +38,16 @@ namespace Unidux
             }
             return action;
         }
+
+        protected static TAction SetTrigger<TAction>(Enum trigger) where TAction: UniduxAction<TState>
+        {
+            return TriggerBool<TAction, TState>.CreateTrigger(trigger);
+        }
+
+        protected static TAction SetTrigger<TAction>(Enum trigger, Enum state) where TAction : UniduxAction<TState>
+        {
+            return TriggerState<TAction, TState>.CreateTrigger(trigger, state);
+        }
+
     }
 }

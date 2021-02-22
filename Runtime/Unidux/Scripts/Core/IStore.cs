@@ -8,10 +8,14 @@ namespace Unidux
         void Tick();
     }
 
-    public interface IStoreObject
+    public interface IStoreObject: IDisposable
     {
         object ObjectState { get; set; }
         IObservable<object> ObjectSubject { get; }
         Type StateType { get; }
+
+        bool DisposeOnLoadHub { get; }
+
+        void InitOnLoadHub();
     }
 }

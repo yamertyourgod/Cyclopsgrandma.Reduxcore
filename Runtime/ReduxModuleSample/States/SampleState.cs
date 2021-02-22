@@ -9,5 +9,15 @@ namespace SampleModule
     {
         public override string Id { get; set; } = "SampleModule";
         public string HelloString { get; internal set; }
+
+        public enum TriggerBool
+        {
+            None
+        }
+
+        public enum TriggerEnum
+        {
+            None
+        }
     }
 }

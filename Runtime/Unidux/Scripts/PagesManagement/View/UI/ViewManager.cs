@@ -20,18 +20,30 @@ namespace ViewManager
         public void RegisterView(IView view)
         {
             Views.Add(view);
-            view.SetActive(false);
+            if (view.ViewType == ViewType.Window)
+            {
+                view.SetActive(false);
+            }
         }
 
         public static Enum CurrentView;
 
-        public void SwitchTo(Enum name, object options = null)
+        public List<Enum> GetOpenedPanels => Views?.Where(v => v.ViewType == ViewType.Panel && v.Active).Select(v => v.ViewName).ToList();
+
+        public List<Enum> GetOpenedPopups => Views?.Where(v => v.ViewType == ViewType.Popup && v.Active).Select(v => v.ViewName).ToList();
+
+        public List<Enum> GetPanels => Views?.Where(v => v.ViewType == ViewType.Panel).Select(v => v.ViewName).ToList();
+
+        public List<Enum> GetPopups => Views?.Where(v => v.ViewType == ViewType.Popup).Select(v => v.ViewName).ToList();
+
+
+        public void SwitchTo(Enum name, SetActiveOptions options = null)
         {
             CurrentView = name;
             //Debug.Log($"Switch to {CurrentView}");
             if (_lastView != name)
             {
-                Views.ForEach(v => v.SetActive(v.ViewName.Equals(name)));
+                Views.Where(v => v.ViewType == ViewType.Window).ToList().ForEach(v => v.SetActive(v.ViewName.Equals(name), options));
                 if (Views.Exists(v => v.ViewName.Equals(name)))
                 {
                     _lastView = name;
@@ -40,9 +52,28 @@ namespace ViewManager
 
         }
 
-        public void ShowPopup(Enum name, object options = null)
+        public void ShowPopup(Enum name, SetActiveOptions options = null)
         {
-            GetView(name)?.OnShow(options);
+            var view = GetView(name);
+            view.SetActive(true, options);
+        }
+
+        public void HidePopup(Enum name, SetActiveOptions options = null)
+        {
+            var view = GetView(name);
+            view.SetActive(false, options);
+        }
+
+        public void ShowPanel(Enum name, SetActiveOptions options = null)
+        {
+            var view = GetView(name);
+            view.SetActive(true, options);
+        }
+
+        public void HidePanel(Enum name, SetActiveOptions options = null)
+        {
+            var view = GetView(name);
+            view.SetActive(false, options);
         }
 
         public IView GetView(Enum name)

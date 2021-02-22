@@ -21,17 +21,22 @@ namespace Unidux
         protected abstract IReducer[] reducers { get; set; }
         protected virtual RepositoryBase repository { get; set; }
 
+        public virtual bool DisposeOnLoadHub { get; set; }
+        public static bool Initialized => _instance != null;
+
         public void Initialize()
         {
             _instance = this;
             _synchronizationContext = SynchronizationContext.Current;
             _state = Activator.CreateInstance<TState>();
             _changed = false;
-            UniduxTickProvider.Subscribe(this); 
         }
 
         public static void Dispatch(UniduxAction<TState> action)
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
             BeginDispatch(action);
         }
 
@@ -39,9 +44,17 @@ namespace Unidux
         public async static void Subscribe(Component component, Action<TState> action)
         {
             await UntilInstanceNotNull();
-            //Debug.Log($"{_instance} SUBSCRIBED");
+
             if (_instance._subject == null) _instance._subject = new Subject<TState>();
             _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component);
+        }
+
+        public async static void Subscribe(Action<TState> action)
+        {
+            await UntilInstanceNotNull();
+
+            if (_instance._subject == null) _instance._subject = new Subject<TState>();
+            _instance._subject.AsObservable().Subscribe(action);
         }
 
         /// <summary>
@@ -50,11 +63,18 @@ namespace Unidux
         /// <returns></returns>
         public static TState GetState()
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
             return _instance._state;
         }
 
         public static T GetRepository<T>() where T : RepositoryBase
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
+
             if (_instance.repository != null)
             {
                 return _instance.repository is T ? _instance.repository as T : throw new Exception("Wrong repository cast type");
@@ -67,6 +87,9 @@ namespace Unidux
 
         public static async Task<T> GetReposytoryAsync<T>() where T : RepositoryBase
         {
+            if (_instance == null)
+                throw new StoreNotInitializedException();
+
             await UntilInstanceNotNull();
             return _instance.repository as T;
         }
@@ -178,6 +201,25 @@ namespace Unidux
 
             //Debug.Log("Tick");
             this.ForceUpdate();
+        }
+
+        public void InitOnLoadHub()
+        {
+            UniduxTickProvider.Subscribe(this);
+        }
+
+        public void Dispose()
+        {
+            Debug.LogWarning("Disposing...");
+            UniduxTickProvider.Unsubscribe(this);
+            _instance = null;
+            _state = null;
+            _subject = null;
+            _dispatcher = null;
+            _synchronizationContext = null;
+            repository.Dispose();
+            reducers.ToList().ForEach(r => r.Dispose());
+            reducers = null;
         }
     }
 

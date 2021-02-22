@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Unidux.Util;
 
 namespace Unidux
@@ -8,6 +9,9 @@ namespace Unidux
     {
         public abstract string Id { get; set; }
         public bool IsStateChanged { get; private set; }
+
+        public TriggersWrapper<bool> Triggers { get; set; } = new TriggersWrapper<bool>();
+        public TriggersWrapper<Enum> StateTriggers { get; set; } = new TriggersWrapper<Enum>();
 
         public StateBase()
         {

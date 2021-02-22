@@ -14,7 +14,14 @@ namespace Unidux
         public ReducerBase()
         {
             _undoApplier = new UndoApplier<TState>(30, AllowUndoCondition);
-            _coroutineHolder = new GameObject("SampleCoroutinesHolder").AddComponent<CoroutineHolder>();
+            if (CoroutineHolder.Instance == null)
+            {
+                _coroutineHolder = new GameObject("CoroutinesHolder").AddComponent<CoroutineHolder>();
+            }
+            else
+            {
+                _coroutineHolder = CoroutineHolder.Instance;
+            }
         }
 
         protected virtual bool AllowUndoCondition(UniduxAction<TState> action) => true;
@@ -22,6 +29,8 @@ namespace Unidux
 
         public virtual TState Reduce(TState state, TAction action)
         {
+            UniduxAction<TState>.CurrentState = state;
+
             if(action.IsUndoLastAction)
             {
                 _undoApplier.Undo(state);
@@ -73,6 +82,13 @@ namespace Unidux
             var nextAction = Activator.CreateInstance<TAction>();
             nextAction.Invoke = action;
             StoreBase<TState>.Dispatch(nextAction);
+        }
+
+        public void Dispose()
+        {
+            _undoApplier = null;
+            _context = null;
+            _coroutineHolder = null;
         }
 
         public class WaitFor

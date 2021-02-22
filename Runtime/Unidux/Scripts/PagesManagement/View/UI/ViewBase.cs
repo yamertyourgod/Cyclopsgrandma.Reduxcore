@@ -10,7 +10,12 @@ namespace ViewManager
         public abstract Enum ViewName { get; }
         public abstract ViewType ViewType { get; }
 
+        public bool Active { get; set; }
+
         protected IViewManager viewManager;
+        private Coroutine _lateShowCoroutine;
+
+        protected virtual int FramesSkipToLateShow { get; set; } = 1;
 
         protected override void Awake()
         {
@@ -26,27 +31,37 @@ namespace ViewManager
             viewManager.RegisterView(this);
         }
 
-        public virtual void OnShow(object options = null)
-        {
-            Debug.Log("OnShow");
-            gameObject.SetActive(true);
-        }
+        public virtual void OnShow(SetActiveOptions options = null)  { }
 
-        public virtual void OnHide()
-        {
-            gameObject.SetActive(false);
-        }
+        public virtual void OnLateShow() { }
 
-        public void SetActive(bool active)
+        public virtual void OnHide(SetActiveOptions options = null) { }
+
+        public void SetActive(bool active, SetActiveOptions options = null)
         {
             if (active)
             {
-                OnShow();
+                gameObject.SetActive(true);
+                OnShow(options);
+                _lateShowCoroutine = StartCoroutine(CallOnShowLate());
             }
             else
             {
-                OnHide();
+                gameObject.SetActive(false);
+                OnHide(options);
+                if(_lateShowCoroutine != null) StopCoroutine(_lateShowCoroutine);
             }
-        } 
+        }
+
+        private IEnumerator CallOnShowLate()
+        {
+            //this skips frames
+            for(var i = 0; i < FramesSkipToLateShow; i++)
+            {
+                yield return null;
+            }
+
+            OnLateShow();
+        }
     }
 }
