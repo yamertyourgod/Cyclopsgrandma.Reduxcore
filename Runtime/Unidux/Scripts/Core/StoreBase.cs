@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Unidux
         private TState _state;
         private bool _changed;
         private Subject<TState> _subject;
-
+        private Dictionary<Action<TState>, IDisposable> _subscriptions;
         private Func<object, object> _dispatcher;
         private SynchronizationContext _synchronizationContext;
 
@@ -29,6 +30,7 @@ namespace Unidux
         public void Initialize()
         {
             _instance = this;
+            _subscriptions = new Dictionary<Action<TState>, IDisposable>();
             _synchronizationContext = SynchronizationContext.Current;
             _state = Activator.CreateInstance<TState>();
             _changed = false;
@@ -48,7 +50,10 @@ namespace Unidux
             await UntilInstanceNotNull();
 
             if (_instance._subject == null) _instance._subject = new Subject<TState>();
-            _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component);
+            if (_instance._subscriptions.ContainsKey(action))
+                return;
+
+            _instance._subscriptions.Add(action, _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component));
         }
 
         public async static void Subscribe(Action<TState> action)
@@ -56,7 +61,22 @@ namespace Unidux
             await UntilInstanceNotNull();
 
             if (_instance._subject == null) _instance._subject = new Subject<TState>();
-            _instance._subject.AsObservable().Subscribe(action);
+            if (_instance._subscriptions.ContainsKey(action))
+                return; 
+
+            _instance._subscriptions.Add(action, _instance._subject.AsObservable().Subscribe(action));
+        }
+
+        public static void Unsubscribe(Action<TState> action)
+        {
+            if (_instance == null)
+                return;
+
+            if (_instance._subscriptions.TryGetValue(action, out var subscription))
+            {
+                subscription.Dispose();
+                _instance._subscriptions.Remove(action);
+            }
         }
 
         /// <summary>

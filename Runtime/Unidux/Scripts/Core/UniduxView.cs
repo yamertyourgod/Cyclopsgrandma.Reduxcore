@@ -31,7 +31,13 @@ namespace Unidux
 
         protected virtual void Subscribe()
         {
-            StoreBase<TState>.Subscribe(this, (state) => OnRenderRequest(state));
+            StoreBase<TState>.Subscribe(this, OnRenderRequest);
+        }
+
+        protected virtual void Unsubscribe()
+        {
+            StoreBase<TState>.Unsubscribe(OnRenderRequest);
+
         }
 
         private void OnRenderRequest(TState state)
