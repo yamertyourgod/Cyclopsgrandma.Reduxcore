@@ -37,7 +37,6 @@ namespace Unidux
         protected virtual void Unsubscribe()
         {
             StoreBase<TState>.Unsubscribe(OnRenderRequest);
-
         }
 
         private void OnRenderRequest(TState state)
@@ -48,5 +47,9 @@ namespace Unidux
             }
         }
 
+        private void OnDestroy()
+        {
+            Unsubscribe();
+        }
     }
 }

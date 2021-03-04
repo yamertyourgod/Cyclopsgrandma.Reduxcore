@@ -3,4 +3,4 @@ version 1.0.6
 added services tab
 added entities tab
 added unsubscribes for views and actions
-
+added unsubscribe call on destroy
