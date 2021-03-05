@@ -26,8 +26,16 @@ namespace Unidux
                 return value;
             }
 
-            _triggers[trigger] = default;
+            return _triggers[trigger] = GetDefault<TValue>(trigger);
+
+            throw new Exception("Attempt to use empty enum for enum triggers!");
+        }
+
+        protected virtual TValue GetDefault<TTValue>(Enum trigger) where TTValue : TValue
+        {
             return default;
         }
     }
+
+
 }
