@@ -129,9 +129,9 @@ namespace Unidux
                 throw new StoreNotInitializedException();
 
 
-            if (_instance.services != null)
+            if (_instance.entities != null)
             {
-                return _instance.services is T ? _instance.services as T : throw new Exception("Wrong entities cast type");
+                return _instance.entities is T ? _instance.entities as T : throw new Exception("Wrong entities cast type");
             }
             else
             {
