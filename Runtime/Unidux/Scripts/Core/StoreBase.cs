@@ -286,7 +286,10 @@ namespace Unidux
             }
 
             //Debug.Log("Tick");
-            this.ForceUpdate();
+            if (_subject.HasObservers)
+            {
+                this.ForceUpdate();
+            }
         }
 
         public void InitOnLoadHub()

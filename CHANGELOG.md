@@ -5,3 +5,4 @@ added unsubscribe call on destroy
 added default value for enum triggers
 fixed entities cast method
 added streight subscribe call 
+added if has observers to tick update
