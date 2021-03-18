@@ -286,7 +286,7 @@ namespace Unidux
             }
 
             //Debug.Log("Tick");
-            if (_subject.HasObservers)
+            if (_subject is not null && _subject.HasObservers)
             {
                 this.ForceUpdate();
             }
