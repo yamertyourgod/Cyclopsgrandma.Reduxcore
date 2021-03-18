@@ -44,11 +44,30 @@ namespace Unidux
             BeginDispatch(action);
         }
 
-
-        public async static void Subscribe(Component component, Action<TState> action)
+        public static void Subscribe(Component component, Action<TState> action)
         {
-            await UntilInstanceNotNull();
+            if(_instance is null)
+            {
+                SubscribeAsync(component, action);
+                return;
+            }
 
+            EndSubscribe(component, action);
+        }
+
+        public static void Subscribe(Action<TState> action)
+        {
+            if (_instance is null)
+            {
+                SubscribeAsync(action);
+                return;
+            }
+
+            EndSubscribe(action);
+        }
+
+        private static void EndSubscribe(Component component, Action<TState> action)
+        {
             if (_instance._subject == null) _instance._subject = new Subject<TState>();
             if (_instance._subscriptions.ContainsKey(action))
                 return;
@@ -56,16 +75,28 @@ namespace Unidux
             _instance._subscriptions.Add(action, _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component));
         }
 
-        public async static void Subscribe(Action<TState> action)
+        private static void EndSubscribe(Action<TState> action)
         {
-            await UntilInstanceNotNull();
-
             if (_instance._subject == null) _instance._subject = new Subject<TState>();
             if (_instance._subscriptions.ContainsKey(action))
-                return; 
+                return;
 
             _instance._subscriptions.Add(action, _instance._subject.AsObservable().Subscribe(action));
         }
+
+        private static async void SubscribeAsync(Component component, Action<TState> action)
+        {
+            await UntilInstanceNotNull();
+            EndSubscribe(component, action);
+        }
+
+        private static async void SubscribeAsync(Action<TState> action)
+        {
+            await UntilInstanceNotNull();
+            EndSubscribe(action);
+        }
+
+
 
         public static void Unsubscribe(Action<TState> action)
         {
