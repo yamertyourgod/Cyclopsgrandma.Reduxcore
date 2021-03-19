@@ -78,7 +78,7 @@ namespace Unidux
 
         private IEnumerator ExecuteCoroutine(Action<TState, StorageObject> action)
         {
-            yield return new WaitWhile(StoreBase<TState>.HasObservers);
+            yield return new WaitUntil(StoreBase<TState>.HasObservers);
             yield return new WaitFor().Frames(1);
             var nextAction = Activator.CreateInstance<TAction>();
             nextAction.Invoke = action;
