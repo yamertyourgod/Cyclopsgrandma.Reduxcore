@@ -75,6 +75,11 @@ namespace Unidux
             _instance._subscriptions.Add(action, _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component));
         }
 
+        internal static bool HasObservers()
+        {
+            return _instance?._subject?.HasObservers == true;
+        }
+
         private static void EndSubscribe(Action<TState> action)
         {
             if (_instance._subject == null) _instance._subject = new Subject<TState>();
@@ -285,7 +290,6 @@ namespace Unidux
                 return;
             }
 
-            //Debug.Log("Tick");
             if (_subject != null && _subject.HasObservers)
             {
                 this.ForceUpdate();
