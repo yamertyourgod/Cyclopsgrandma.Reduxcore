@@ -252,6 +252,7 @@ namespace Unidux
                 if (matcher.IsMatchedAction(action))
                 {
                     this._state = (TState)matcher.ReduceAny(this._state, action);
+                    this._state.LastAction = action;
                     this._changed = true;
                 }
             }
@@ -273,8 +274,9 @@ namespace Unidux
             lock (this._state)
             {
                 // Prevent writing state object
+                var action = this._state.LastAction;
                 fixedState = (TState)this._state.Clone();
-
+                fixedState.LastAction = action;
                 // The function may slow
                 StateUtil.ResetStateChanged(this._state);
             }

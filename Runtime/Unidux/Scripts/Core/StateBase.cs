@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Unidux.Util;
 
 namespace Unidux
@@ -12,6 +13,9 @@ namespace Unidux
 
         public BoolTrigger Triggers { get; set; } = new BoolTrigger();
         public EnumTrigger StateTriggers { get; set; } = new EnumTrigger();
+
+        [NonSerialized]
+        public object LastAction;
 
         public StateBase()
         {
