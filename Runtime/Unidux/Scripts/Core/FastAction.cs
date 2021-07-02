@@ -27,7 +27,6 @@ namespace Unidux
         private void OnUndoAbstract(TState state, StorageObject storage)
         {
             OnUndo(state, storage);
-
         }
 
         protected virtual void OnUndo(TState state, StorageObject storage)
@@ -42,11 +41,12 @@ namespace Unidux
 
         protected virtual void OnNext(TState state, StorageObject storage)
         {
-
+            state.NotifyObservers = false;
         }
 
         private void OnInvokeAbstract(TState state, StorageObject storage)
         {
+            state.NotifyObservers = true;
             OnInvoke(state, storage);
         }
 

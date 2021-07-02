@@ -13,6 +13,7 @@ namespace Unidux
 
         public BoolTrigger Triggers { get; set; } = new BoolTrigger();
         public EnumTrigger StateTriggers { get; set; } = new EnumTrigger();
+        public bool NotifyObservers { get; set; }
 
         [NonSerialized]
         public object LastAction;

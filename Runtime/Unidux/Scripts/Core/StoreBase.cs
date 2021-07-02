@@ -253,7 +253,7 @@ namespace Unidux
                 {
                     this._state = (TState)matcher.ReduceAny(this._state, action);
                     this._state.LastAction = action;
-                    this._changed = true;
+                    this._changed = this._state.NotifyObservers;
                 }
             }
 
