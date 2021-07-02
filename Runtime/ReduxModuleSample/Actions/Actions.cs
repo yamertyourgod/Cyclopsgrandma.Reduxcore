@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SampleModule
 {
-    public class SampleAction : UniduxAction<SampleState>
+    public class SampleAction : FastAction<SampleState>
     {
         public static SampleAction Hello => SampleHelloAction.Create();
         public static SampleAction UndoLast = new SampleAction() { IsUndoLastAction = true };
