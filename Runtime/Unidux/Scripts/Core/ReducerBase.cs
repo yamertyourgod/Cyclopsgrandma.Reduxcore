@@ -46,7 +46,7 @@ namespace Unidux
             {
                 try
                 {
-                    _context.Post((d) => _coroutineHolder.StartCoroutine(ExecuteCoroutine(action.DoNext)), null);
+                    _context.Post((d) => _coroutineHolder.StartCoroutine(ExecuteCoroutine(action)), null);
                 }
                 catch (Exception e)
                 {
@@ -58,6 +58,7 @@ namespace Unidux
                 action.ContextId = SetActionContextId(state);
                 _undoApplier.Write(action);
             }
+            
             return state;
         }
 
@@ -76,11 +77,15 @@ namespace Unidux
             return action is TAction;
         }
 
-        private IEnumerator ExecuteCoroutine(Action<TState, StorageObject> action)
+        private IEnumerator ExecuteCoroutine(TAction action)
         {
+            yield return new WaitUntil(StoreBase<TState>.HasObservers);
             yield return new WaitFor().Frames(1);
+            
             var nextAction = Activator.CreateInstance<TAction>();
-            nextAction.Invoke = action;
+            nextAction.Type = $"OnNext {action.Type}";
+            nextAction.Invoke = action.DoNext;
+            nextAction.DoNext = null;
             StoreBase<TState>.Dispatch(nextAction);
         }
 

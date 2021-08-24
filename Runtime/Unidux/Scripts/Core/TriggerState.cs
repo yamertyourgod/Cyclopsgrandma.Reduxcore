@@ -16,7 +16,7 @@ namespace Unidux
             triggerState._state = state;
             action.Invoke = triggerState.OnInvoke;
             action.DoNext = triggerState.DoNext;
-
+            action.Type = $"Trigger state {trigger} {state}";
             return action;
         }
 

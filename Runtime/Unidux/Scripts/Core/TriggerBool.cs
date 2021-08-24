@@ -9,12 +9,12 @@ namespace Unidux
         public static TAction CreateTrigger(Enum trigger)
         {
             var triggerBool = new TriggerBool<TAction, TState>();
-            var action = Activator.CreateInstance<TAction>();
-
+            var action = Activator.CreateInstance<TAction>();           
             triggerBool._trigger = trigger;
+            
             action.Invoke = triggerBool.OnInvoke;
             action.DoNext = triggerBool.DoNext;
-
+            action.Type = $"Trigger bool {trigger}";
             return action;
         }
 

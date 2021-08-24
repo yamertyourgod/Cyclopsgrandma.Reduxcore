@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 
 namespace Unidux
 {
-    public class UniduxAction<TState> where TState: StateBase
+    public class UniduxAction<TState> where TState : StateBase
     {
         public IList<object> Payload = new List<object>();
         public Action<TState, StorageObject> Invoke;
         public Action<TState, StorageObject> Undo;
         public Action<TState, StorageObject> Redo;
+
+        public string Type { get; set; }
+
         public StorageObject Storage = new StorageObject();
         public string ContextId;
         public Action OnComplete;
@@ -19,6 +22,11 @@ namespace Unidux
         public bool IsRedoLastAction;
 
         public static TState CurrentState;
+
+        public UniduxAction()
+        {
+            Type = GetType().ToString();
+        }
 
         protected static TAction CreateAction<TAction>(System.Action<TState, StorageObject> onInvoke, System.Action<TState, StorageObject> doNext = null, Action<TState, StorageObject> undo = null, Action<TState, StorageObject> redo = null) where TAction : UniduxAction<TState>
         {
@@ -32,6 +40,7 @@ namespace Unidux
             action.Invoke = onInvoke;
             action.Undo = undo;
             action.Redo = redo;
+
             if (doNext != null)
             {
                 action.DoNext = doNext;

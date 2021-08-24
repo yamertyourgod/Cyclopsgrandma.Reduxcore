@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Unidux
         private TState _state;
         private bool _changed;
         private Subject<TState> _subject;
-
+        private Dictionary<Action<TState>, IDisposable> _subscriptions;
         private Func<object, object> _dispatcher;
         private SynchronizationContext _synchronizationContext;
 
@@ -29,6 +30,7 @@ namespace Unidux
         public void Initialize()
         {
             _instance = this;
+            _subscriptions = new Dictionary<Action<TState>, IDisposable>();
             _synchronizationContext = SynchronizationContext.Current;
             _state = Activator.CreateInstance<TState>();
             _changed = false;
@@ -42,21 +44,75 @@ namespace Unidux
             BeginDispatch(action);
         }
 
-
-        public async static void Subscribe(Component component, Action<TState> action)
+        public static void Subscribe(Component component, Action<TState> action)
         {
-            await UntilInstanceNotNull();
+            if(_instance is null)
+            {
+                SubscribeAsync(component, action);
+                return;
+            }
 
-            if (_instance._subject == null) _instance._subject = new Subject<TState>();
-            _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component);
+            EndSubscribe(component, action);
         }
 
-        public async static void Subscribe(Action<TState> action)
+        public static void Subscribe(Action<TState> action)
+        {
+            if (_instance is null)
+            {
+                SubscribeAsync(action);
+                return;
+            }
+
+            EndSubscribe(action);
+        }
+
+        private static void EndSubscribe(Component component, Action<TState> action)
+        {
+            if (_instance._subject == null) _instance._subject = new Subject<TState>();
+            if (_instance._subscriptions.ContainsKey(action))
+                return;
+
+            _instance._subscriptions.Add(action, _instance._subject.AsObservable().TakeUntilDestroy(component).Subscribe(action).AddTo(component));
+        }
+
+        internal static bool HasObservers()
+        {
+            return _instance?._subject?.HasObservers == true;
+        }
+
+        private static void EndSubscribe(Action<TState> action)
+        {
+            if (_instance._subject == null) _instance._subject = new Subject<TState>();
+            if (_instance._subscriptions.ContainsKey(action))
+                return;
+
+            _instance._subscriptions.Add(action, _instance._subject.AsObservable().Subscribe(action));
+        }
+
+        private static async void SubscribeAsync(Component component, Action<TState> action)
         {
             await UntilInstanceNotNull();
+            EndSubscribe(component, action);
+        }
 
-            if (_instance._subject == null) _instance._subject = new Subject<TState>();
-            _instance._subject.AsObservable().Subscribe(action);
+        private static async void SubscribeAsync(Action<TState> action)
+        {
+            await UntilInstanceNotNull();
+            EndSubscribe(action);
+        }
+
+
+
+        public static void Unsubscribe(Action<TState> action)
+        {
+            if (_instance == null)
+                return;
+
+            if (_instance._subscriptions.TryGetValue(action, out var subscription))
+            {
+                subscription.Dispose();
+                _instance._subscriptions.Remove(action);
+            }
         }
 
         /// <summary>
@@ -109,9 +165,9 @@ namespace Unidux
                 throw new StoreNotInitializedException();
 
 
-            if (_instance.services != null)
+            if (_instance.entities != null)
             {
-                return _instance.services is T ? _instance.services as T : throw new Exception("Wrong entities cast type");
+                return _instance.entities is T ? _instance.entities as T : throw new Exception("Wrong entities cast type");
             }
             else
             {
@@ -196,7 +252,8 @@ namespace Unidux
                 if (matcher.IsMatchedAction(action))
                 {
                     this._state = (TState)matcher.ReduceAny(this._state, action);
-                    this._changed = true;
+                    this._state.LastAction = action;
+                    this._changed = this._state.NotifyObservers;
                 }
             }
 
@@ -217,8 +274,9 @@ namespace Unidux
             lock (this._state)
             {
                 // Prevent writing state object
+                var action = this._state.LastAction;
                 fixedState = (TState)this._state.Clone();
-
+                fixedState.LastAction = action;
                 // The function may slow
                 StateUtil.ResetStateChanged(this._state);
             }
@@ -234,8 +292,10 @@ namespace Unidux
                 return;
             }
 
-            //Debug.Log("Tick");
-            this.ForceUpdate();
+            if (_subject != null && _subject.HasObservers)
+            {
+                this.ForceUpdate();
+            }
         }
 
         public void InitOnLoadHub()

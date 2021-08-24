@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Unidux.Util;
 
 namespace Unidux
@@ -10,8 +11,12 @@ namespace Unidux
         public abstract string Id { get; set; }
         public bool IsStateChanged { get; private set; }
 
-        public TriggersWrapper<bool> Triggers { get; set; } = new TriggersWrapper<bool>();
-        public TriggersWrapper<Enum> StateTriggers { get; set; } = new TriggersWrapper<Enum>();
+        public BoolTrigger Triggers { get; set; } = new BoolTrigger();
+        public EnumTrigger StateTriggers { get; set; } = new EnumTrigger();
+        public bool NotifyObservers { get; set; }
+
+        [NonSerialized]
+        public object LastAction;
 
         public StateBase()
         {
