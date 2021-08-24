@@ -8,3 +8,4 @@ added streight subscribe call
 added if has observers to tick update
 added wait observers function to ReducerBase for DoNext operation
 added action trace via lastAction in state
+added fast action class for convenient way to create actions
