@@ -58,6 +58,7 @@ namespace Unidux
                 action.ContextId = SetActionContextId(state);
                 _undoApplier.Write(action);
             }
+            
             return state;
         }
 
@@ -80,9 +81,11 @@ namespace Unidux
         {
             yield return new WaitUntil(StoreBase<TState>.HasObservers);
             yield return new WaitFor().Frames(1);
+            
             var nextAction = Activator.CreateInstance<TAction>();
             nextAction.Type = $"OnNext {action.Type}";
             nextAction.Invoke = action.DoNext;
+            nextAction.DoNext = null;
             StoreBase<TState>.Dispatch(nextAction);
         }
 
